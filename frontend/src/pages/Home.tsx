@@ -27,18 +27,6 @@ const Home: React.FC<Props> = ({ darkMode, setDarkMode, taskCfg, setTaskCfg }) =
     const [step, setStep] = React.useState<'config'|'running'>('config')
 
     return (
-        // <div className="container">
-        //     <Card id="card1" className="item" title={t('home.card1.title')} style={{background: darkMode ? '#222222':'#eaeaea'}}>
-        //         <FolderPicker />
-        //     </Card>
-        //     <Card
-        //         className="item"
-        //         title={t('home.card2.title')}
-        //         style={{ background: darkMode ? '#222222' : '#eaeaea' }}
-        //         >
-        //         <CRTables />
-        //     </Card>
-        // </div>
         <div style={{ position: 'relative', overflow: 'hidden' }}>
           <AnimatePresence mode="wait">
             {step === 'config' && (

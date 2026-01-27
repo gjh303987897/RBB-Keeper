@@ -1,7 +1,6 @@
 import React from 'react'
 import { Switch, Select, Space, Typography } from 'antd'
 import { useTranslation } from 'react-i18next'
-import { use } from 'i18next'
 import { backend } from '../../wailsjs/go/models'
 import { SaveUserConfig } from '../../wailsjs/go/main/App'
 

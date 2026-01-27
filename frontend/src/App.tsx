@@ -6,7 +6,6 @@ import { GetUserConfig } from "../wailsjs/go/main/App"
 import Settings from './pages/Settings'
 import { Button, Flex, notification } from 'antd';
 
-// Ant Design locales
 import zhCN from 'antd/locale/zh_CN'
 import enUS from 'antd/locale/en_US'
 import Home from './pages/Home'
@@ -20,7 +19,6 @@ const App: React.FC = () => {
   const [darkMode, setDarkMode] = useState<boolean | null>(null)
   const [currentPage, setCurrentPage] = useState('main')
   const [antdLocale, setAntdLocale] = useState(enUS)
-  // const antdLocale = i18n.language === 'zh' ? zhCN : enUS
 
   const [taskCfg, setTaskCfg] = React.useState<TaskCfg>({
     fileCfg: { method: 'disable' },

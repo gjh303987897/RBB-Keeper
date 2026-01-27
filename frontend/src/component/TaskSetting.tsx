@@ -4,7 +4,7 @@ import { FolderOpenOutlined, DeleteOutlined, CheckCircleFilled } from '@ant-desi
 import InfiniteScroll from 'react-infinite-scroll-component'
 import './TaskSetting.css'
 import { PickFold } from '../../wailsjs/go/main/App'
-
+import { useTranslation } from 'react-i18next'
 
 const { Title,Text } = Typography
 
@@ -37,13 +37,8 @@ export interface TaskCfg {
 }
 
 const FolderPicker: React.FC<{ taskCfg: TaskCfg; setTaskCfg: React.Dispatch<React.SetStateAction<TaskCfg>> }> = ({ taskCfg, setTaskCfg }) => {
-  // const [taskCfg, setTaskCfg] = useState<TaskCfg>({
-  //   fileCfg: { method: 'disable' },
-  //   picCfg: { method: 'disable' },
-  //   pathCfgs: []
-  // })
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
-
+  const { t, i18n } = useTranslation()
   const handlePickFolder = async () => {
     try {
       const path = await PickFold()
@@ -53,7 +48,7 @@ const FolderPicker: React.FC<{ taskCfg: TaskCfg; setTaskCfg: React.Dispatch<Reac
           (p) => p.path === path
         )
         if (exists) {
-          message.warning('该目录已存在')
+          message.warning(t('taskSetting.setTaskFolderWarningMessage'))
           return prev
         }
 
@@ -69,17 +64,17 @@ const FolderPicker: React.FC<{ taskCfg: TaskCfg; setTaskCfg: React.Dispatch<Reac
         }
       })
     } catch (err) {
-      message.error('选择目录失败')
+      message.error(t('taskSetting.setTaskFolderErrMessage'))
     }
   }
 
   const dataVaild = (): boolean => {
     if (taskCfg.pathCfgs.length === 0) {
-      message.error('请至少添加一个目录')
+      message.error(t('taskSetting.taskSubmitNoPathErrMessage'))
       return false
     }
     if (taskCfg.fileCfg.method === 'disable' && taskCfg.picCfg.method === 'disable') {
-      message.error('请至少选择一种计算方式')
+      message.error(t('taskSetting.taskSubmitNoMethodErrMessage'))
       return false
     }
     return true
@@ -93,13 +88,13 @@ const FolderPicker: React.FC<{ taskCfg: TaskCfg; setTaskCfg: React.Dispatch<Reac
     )
   }
   const fileComputationOptions: SelectProps<FileComputationType>['options'] = [
-    { value: 'disable', label: 'Disable' },
+    { value: 'disable', label: t('taskSetting.taskMethodOptionDisable') },
     { value: 'hybr', label: 'Hybrid' },
     { value: 'size', label: 'File Size' },
     { value: 'blake3', label: 'Blake3' },
   ]
   const photoComputationOptions: SelectProps<PicComputationType>['options'] = [
-    { value: 'disable', label: 'Disable' },
+    { value: 'disable', label: t('taskSetting.taskMethodOptionDisable') },
     { value: 'phash', label: 'pHash' },
     { value: 'vit', label: 'ViT' },
     { value: 'resnet', label: 'ResNet' },
@@ -109,7 +104,7 @@ const FolderPicker: React.FC<{ taskCfg: TaskCfg; setTaskCfg: React.Dispatch<Reac
       <div className='header'>
         <Row>
           <Col span={8}>
-            <Title level={3} style={{ margin: 0 }}>renwu chuangjian </Title>
+            <Title level={3} style={{ margin: 0 }}>{t('taskSetting.pageTitle')}</Title>
           </Col>
           <Col span={16} style={{ textAlign: 'right' }}>
             <Select
@@ -147,7 +142,7 @@ const FolderPicker: React.FC<{ taskCfg: TaskCfg; setTaskCfg: React.Dispatch<Reac
               color='cyan'
               style={{ width: '120px', marginRight: '10px' }}
             >
-              添加目录
+              {t('taskSetting.pathAddButton')}
             </Button>
           
             <Button
@@ -161,7 +156,7 @@ const FolderPicker: React.FC<{ taskCfg: TaskCfg; setTaskCfg: React.Dispatch<Reac
                 }
               }}
             >
-              add i18n support
+              {t('taskSetting.submitTaskButton')}
             </Button>
           </Col>
         </Row>
@@ -187,12 +182,12 @@ const FolderPicker: React.FC<{ taskCfg: TaskCfg; setTaskCfg: React.Dispatch<Reac
         >
           <List
             dataSource={taskCfg.pathCfgs.slice(0, visibleCount)}
-            locale={{ emptyText: '尚未选择目录' }}
+            locale={{ emptyText: t('taskSetting.pathListEmptyText') }}
             renderItem={(item:PathCfg) => (
               <List.Item
                 actions={[
                   <span>
-                    <Text style={{marginRight:'8px'}}>递归子目录</Text>
+                    <Text style={{marginRight:'8px'}}>{t('taskSetting.pathTableColumnRecursion')}</Text>
                     <Switch defaultChecked size='small' value={item.recursion} onChange={(checked:boolean)=>{
                       setTaskCfg((prevCfg) => ({
                         ...prevCfg,
@@ -209,7 +204,6 @@ const FolderPicker: React.FC<{ taskCfg: TaskCfg; setTaskCfg: React.Dispatch<Reac
                     type="text"
                     danger
                     icon={<DeleteOutlined />}
-                    // onClick={() => handleRemove(item.path)}
                     onClick={() => {
                       setTaskCfg((prev) =>({
                         ...prev,
