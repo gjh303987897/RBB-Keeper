@@ -1,14 +1,25 @@
 package model
 
-type AlgorithmType uint8
+type FileComputationType string
+
 const (
-	AlgorithmBLAKE3 AlgorithmType = iota
-	AlgorithmXXH3
-	AlgorithmSize
-	AlgorithmHybird // size -> BLAKE3
+	FileDisable FileComputationType = "disable"
+	FileHybr    FileComputationType = "hybr"
+	FileSize    FileComputationType = "size"
+	FileBlake3  FileComputationType = "blake3"
+)
+
+type PicComputationType string
+
+const (
+	PicDisable PicComputationType = "disable"
+	PicPhash   PicComputationType = "phash"
+	PicVit     PicComputationType = "vit"
+	PicResnet  PicComputationType = "resnet"
 )
 
 type TaskStatus uint8
+
 const (
 	TaskStatusPending TaskStatus = iota
 	TaskStatusInProgress
@@ -16,12 +27,31 @@ const (
 	TaskStatusFailed
 )
 
+type FileCfg struct {
+	Method FileComputationType `json:"method"`
+}
+
+type PicCfg struct {
+	Method PicComputationType `json:"method"`
+}
+
+type TaskCfgFrontInterface struct {
+	FileCfg  FileCfg   `json:"fileCfg"`
+	PicCfg   PicCfg    `json:"picCfg"`
+	PathCfgs []PathCfg `json:"pathCfgs"`
+}
+
 type TaskConfig struct {
-	ID uint64 `gorm:"primaryKey"`
-	Title string `gorm:"not null"`
-	Algorithm AlgorithmType `gorm:"not null"`
-	Paths StringSlice `gorm:"type:json;not null"`
-	Status TaskStatus `gorm:"not null"`
+	ID             uint64              `gorm:"primaryKey"`
+	CreateTime   int64               `gorm:"not null"`
+	FileAlgorithm  FileComputationType `gorm:"not null"`
+	PhotoAlgorithm PicComputationType  `gorm:"not null"`
+	Paths          StringSlice         `gorm:"type:json;not null"`
+	Status         TaskStatus          `gorm:"not null"`
+}
+
+func (TaskConfig) TableName() string {
+	return "taskConfigs"
 }
 
 type FileEntry struct {

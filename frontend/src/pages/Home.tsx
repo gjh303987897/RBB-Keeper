@@ -41,7 +41,7 @@ const Home: React.FC<Props> = ({ darkMode, setDarkMode, taskCfg, setTaskCfg }) =
                 {/* <div
                   onClick={() => setStep('running')}
                 >page 1</div> */}
-                <FolderPicker taskCfg={taskCfg} setTaskCfg={setTaskCfg} />
+                <FolderPicker taskCfg={taskCfg} setTaskCfg={setTaskCfg} setStep={setStep} />
               </motion.div>
             )}
 

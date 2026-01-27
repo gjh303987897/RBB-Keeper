@@ -6,14 +6,14 @@ export function GetUserConfig() {
   return window['go']['main']['App']['GetUserConfig']();
 }
 
-export function Greet(arg1) {
-  return window['go']['main']['App']['Greet'](arg1);
-}
-
 export function PickFold() {
   return window['go']['main']['App']['PickFold']();
 }
 
 export function SaveUserConfig(arg1) {
   return window['go']['main']['App']['SaveUserConfig'](arg1);
+}
+
+export function TaskConfigToFrontInterface(arg1) {
+  return window['go']['main']['App']['TaskConfigToFrontInterface'](arg1);
 }

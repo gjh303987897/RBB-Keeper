@@ -3,8 +3,9 @@ import { Button, List, Typography, message, Skeleton, Col, Row, Select, SelectPr
 import { FolderOpenOutlined, DeleteOutlined, CheckCircleFilled } from '@ant-design/icons'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import './TaskSetting.css'
-import { PickFold } from '../../wailsjs/go/main/App'
+import { PickFold, TaskConfigToFrontInterface } from '../../wailsjs/go/main/App'
 import { useTranslation } from 'react-i18next'
+import { backend, model } from '../../wailsjs/go/models'
 
 const { Title,Text } = Typography
 
@@ -35,8 +36,12 @@ export interface TaskCfg {
   picCfg: PicCfg
   pathCfgs: PathCfg[]
 }
-
-const FolderPicker: React.FC<{ taskCfg: TaskCfg; setTaskCfg: React.Dispatch<React.SetStateAction<TaskCfg>> }> = ({ taskCfg, setTaskCfg }) => {
+interface Props {
+  taskCfg: TaskCfg
+  setTaskCfg: React.Dispatch<React.SetStateAction<TaskCfg>>
+  setStep: React.Dispatch<React.SetStateAction<'config' | 'running'>>
+}
+const FolderPicker: React.FC<Props> = ({ taskCfg, setTaskCfg, setStep }) => {
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
   const { t, i18n } = useTranslation()
   const handlePickFolder = async () => {
@@ -75,6 +80,21 @@ const FolderPicker: React.FC<{ taskCfg: TaskCfg; setTaskCfg: React.Dispatch<Reac
     }
     if (taskCfg.fileCfg.method === 'disable' && taskCfg.picCfg.method === 'disable') {
       message.error(t('taskSetting.taskSubmitNoMethodErrMessage'))
+      return false
+    }
+    return true
+  }
+
+  async function dataSubmit(): Promise<boolean> {
+    try {
+      const newConfig = model.TaskCfgFrontInterface.createFrom({
+        fileCfg: taskCfg.fileCfg,
+        picCfg: taskCfg.picCfg,
+        pathCfgs: taskCfg.pathCfgs,
+      })
+      await TaskConfigToFrontInterface(newConfig)
+    }catch (error) {
+      message.error(t('taskSetting.submitTaskErrMessage'))
       return false
     }
     return true
@@ -149,10 +169,17 @@ const FolderPicker: React.FC<{ taskCfg: TaskCfg; setTaskCfg: React.Dispatch<Reac
               icon={<CheckCircleFilled />}
               type='primary'
               style={{ width: '120px' }}
-              onClick={()=>{
-                console.log(taskCfg)
+              onClick={async ()=>{
                 if(dataVaild()){
-                  //TODO: submit taskCfg to backend
+                  if (await dataSubmit()){
+                    message.success(t('taskSetting.submitTaskSuccessMessage'))
+                    setTaskCfg({
+                      fileCfg: { method: 'disable' },
+                      picCfg: { method: 'disable' },
+                      pathCfgs: []
+                    })
+                    setStep('running')
+                  }
                 }
               }}
             >

@@ -37,6 +37,8 @@ i18n.use(initReactI18next).init({
           submitTaskButton: '提交任务',
           pathTableColumnRecursion: '递归子目录',
           pathListEmptyText: '尚未选择目录',
+          submitTaskErrMessage: '任务提交失败',
+          submitTaskSuccessMessage: '任务提交成功',
         },
       },
     },

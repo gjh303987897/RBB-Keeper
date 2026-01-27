@@ -15,6 +15,7 @@ import (
 var DB *gorm.DB
 
 func init() {
+	applogger.Logger.Info("Initializing database...")
 	wd, err := os.Getwd()
 	if err != nil {
 		log.Fatal("failed to get working directory: ", err)
@@ -29,7 +30,11 @@ func init() {
 	dbPath := filepath.Join(configDir, "app.db")
 	dbExists := true
 	if _, err := os.Stat(dbPath); os.IsNotExist(err) {
+		applogger.Logger.Info("database file does not exist, will create new one at ", dbPath)
 		dbExists = false
+	}
+	if dbExists {
+		applogger.Logger.Info("database already existed")
 	}
 
 	db, err := gorm.Open(sqlite.Open(dbPath), &gorm.Config{})
@@ -41,7 +46,7 @@ func init() {
 
 	if !dbExists {
 		applogger.Logger.Info("database not found, initializing schema...")
-		if err := DB.AutoMigrate(&model.FileEntry{}); err != nil {
+		if err := DB.AutoMigrate(&model.FileEntry{}, &model.TaskConfig{}); err != nil {
 			log.Fatalf("failed to migrate database: %v", err)
 		}
 	} else {

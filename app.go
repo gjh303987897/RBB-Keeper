@@ -3,8 +3,8 @@ package main
 import (
 	"RBB-Keeper/backend"
 	"RBB-Keeper/backend/applogger"
+	"RBB-Keeper/backend/model"
 	"context"
-	"fmt"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
@@ -23,11 +23,6 @@ func NewApp() *App {
 // so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
-}
-
-// Greet returns a greeting for the given name
-func (a *App) Greet(name string) string {
-	return fmt.Sprintf("Hello %s, It's show time!", name)
 }
 
 func (a *App) GetUserConfig() (*backend.Config, error) {
@@ -50,4 +45,11 @@ func (a *App) PickFold() (string, error) {
 	return runtime.OpenDirectoryDialog(a.ctx, runtime.OpenDialogOptions{
 		Title: i18nSupport,
 	})
+}
+
+func (a *App) TaskConfigToFrontInterface(cfg *model.TaskCfgFrontInterface) error {
+	if err := backend.CreateTask(cfg); err != nil {
+		return err
+	}
+	return nil
 }
