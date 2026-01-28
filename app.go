@@ -30,7 +30,11 @@ func (a *App) GetUserConfig() (*backend.Config, error) {
 }
 
 func (a *App) SaveUserConfig(cfg *backend.Config) error {
-	return backend.SaveConfig(cfg)
+	if err := backend.SaveConfig(cfg); err != nil {
+		return err
+	}
+	runtime.EventsEmit(a.ctx, "saveConfigSuccess")
+	return nil
 }
 
 func (a *App) PickFold() (string, error) {
