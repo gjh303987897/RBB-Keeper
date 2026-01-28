@@ -3,37 +3,41 @@ import { Switch, Select, Space, Typography } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { backend } from '../../wailsjs/go/models'
 import { SaveUserConfig } from '../../wailsjs/go/main/App'
+import { useUserConfig } from '../hooks/useUserConfig'
+import { useNotification } from '../hooks/useNotification'
 
 const { Title, Text } = Typography
-type NotificationType = 'success' | 'info' | 'warning' | 'error';
 
-interface Props {
-  darkMode: boolean
-  setDarkMode: (value: boolean) => void
-  notification: (type: NotificationType, title: string, desc: string) => void
-}
-
-const Settings: React.FC<Props> = ({ darkMode, setDarkMode, notification}) => {
+const Settings: React.FC<{}> = () => {
   const { t, i18n } = useTranslation()
-  async function saveConfig(lang:string,darkMode:boolean) {
-    const newConfig:backend.Config = {
-      language: lang,
-      darkMode: darkMode,
+  const notification = useNotification()
+  const { config, status } = useUserConfig(true)
+
+  if(status !== 'loaded'){
+    return null
+  }
+  async function saveConfig(newConfig: Partial<backend.Config>) {
+    const value: backend.Config = {
+      ...config!,
+      ...newConfig,
     }
     try {
-      await SaveUserConfig(newConfig)
-      notification('success',t('settings.successTitle'),t('settings.saveUserConfigSuccess'))
+      await SaveUserConfig(value)
+      notification.open('success',t('settings.successTitle'),t('settings.saveUserConfigSuccess'))
     }catch(err) {
-      notification('error',t('settings.errorTitle'),t('settings.saveUserConfigError'))
+      notification.open('error',t('settings.errorTitle'),t('settings.saveUserConfigError'))
     }
   }
+  
   return (
     <Space direction="vertical" size="large" style={{ width: '100%' }}>
       <Title level={3} style={{margin:0}}>{t('settings.title')}</Title>
 
       <Space>
         <Text>{t('settings.darkMode')}</Text>
-        <Switch checked={darkMode} onChange={(checked) => { setDarkMode(checked); saveConfig(i18n.language, checked); }} />
+        <Switch checked={config.darkMode} onChange={(checked) => { saveConfig({
+          darkMode: checked
+        }); }} />
       </Space>
 
       <Space>
@@ -46,8 +50,9 @@ const Settings: React.FC<Props> = ({ darkMode, setDarkMode, notification}) => {
             { label: 'English', value: 'en' },
           ]}
           onChange={(lang) => {
-            i18n.changeLanguage(lang)
-            saveConfig(lang, darkMode)
+            saveConfig({
+              language: lang
+            })
           }}
         />
       </Space>

@@ -1,15 +1,10 @@
-import { useTranslation } from 'react-i18next'
 import React from 'react';
-import { Card, Space } from 'antd';
 import './Home.css';
-import CRTables from '../component/ComputationResultsTable';
 import FolderPicker, { TaskCfg } from '../component/TaskSetting';
 
 import { motion, AnimatePresence } from 'framer-motion'
 
 interface Props {
-  darkMode: boolean
-  setDarkMode: React.Dispatch<React.SetStateAction<boolean | null>>
   taskCfg: TaskCfg
   setTaskCfg: React.Dispatch<React.SetStateAction<TaskCfg>>
 }
@@ -21,9 +16,7 @@ const slideVariants = {
 }
     
 
-const Home: React.FC<Props> = ({ darkMode, setDarkMode, taskCfg, setTaskCfg }) => {
-    const { t } = useTranslation()
-
+const Home: React.FC<Props> = ({ taskCfg, setTaskCfg }) => {
     const [step, setStep] = React.useState<'config'|'running'>('config')
 
     return (
