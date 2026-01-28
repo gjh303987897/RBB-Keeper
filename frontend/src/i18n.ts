@@ -40,6 +40,13 @@ i18n.use(initReactI18next).init({
           submitTaskErrMessage: '任务提交失败',
           submitTaskSuccessMessage: '任务提交成功',
         },
+        ComputationResultTable: {
+          pageTitle:'计算面板',
+          default:'未运行',
+          processing:'处理中',
+          success:'完成',
+          backToTaskConfig:'返回上级',
+        },
       },
     },
     en: {

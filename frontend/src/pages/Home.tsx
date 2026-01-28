@@ -3,6 +3,7 @@ import './Home.css';
 import FolderPicker, { TaskCfg } from '../component/TaskSetting';
 
 import { motion, AnimatePresence } from 'framer-motion'
+import CRTables from '../component/ComputationResultsTable';
 
 interface Props {
   taskCfg: TaskCfg
@@ -47,7 +48,7 @@ const Home: React.FC<Props> = ({ taskCfg, setTaskCfg }) => {
                 exit="exit"
                 transition={{ duration: 0.4, ease: 'easeInOut' }}
               >
-                <div>page 2</div>
+                <CRTables setStep={setStep}/>
               </motion.div>
             )}
           </AnimatePresence>

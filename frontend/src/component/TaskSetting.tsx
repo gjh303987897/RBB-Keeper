@@ -125,6 +125,7 @@ const FolderPicker: React.FC<Props> = ({ taskCfg, setTaskCfg, setStep }) => {
         <Row>
           <Col span={8}>
             <Title level={3} style={{ margin: 0 }}>{t('taskSetting.pageTitle')}</Title>
+            <Button onClick={() => {setStep('running')}}>DEV BUTTON</Button> {/*Dev Only Delete when release*/}
           </Col>
           <Col span={16} style={{ textAlign: 'right' }}>
             <Select

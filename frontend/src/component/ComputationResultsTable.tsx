@@ -1,8 +1,10 @@
-import React from 'react';
-import { Flex, Space, Table, Tag } from 'antd';
+import React, { useState } from 'react'
+import { Badge, Button, Col, Flex, Row, Space, Table, Tag } from 'antd';
 import type { TableProps } from 'antd';
 import './ComputationResultsTable.css';
-import { useWindowSize } from './GetWindowSize';
+import { useTranslation } from 'react-i18next'
+import "./TaskSetting.css"
+import Title from 'antd/lib/typography/Title';
 
 interface DataType {
   key: string;
@@ -63,164 +65,58 @@ const columns: TableProps<DataType>['columns'] = [
 
 const data: DataType[] = [
   {
-    key: '1',
-    name: 'John Brown',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-    tags: ['nice', 'developer'],
-  },
-  {
-    key: '2',
-    name: 'Jim Green',
-    age: 42,
-    address: 'London No. 1 Lake Park',
-    tags: ['loser'],
-  },
-  {
-    key: '3',
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sydney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-  {
-    key: '4',
-    name: '1',
-    age: 32,
-    address: 'Sydney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-  {
-    key: '5',
-    name: '2',
-    age: 32,
-    address: 'Sydney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-  {
-    key: '6',
-    name: '3',
-    age: 32,
-    address: 'Sydney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-  {
-    key: '7',
-    name: '4',
-    age: 32,
-    address: 'Sydney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-  {
-    key: '8',
-    name: '5',
-    age: 32,
-    address: 'Sydney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-  {
     key: '9',
     name: '6',
     age: 32,
     address: 'Sydney No. 1 Lake Park',
     tags: ['cool', 'teacher'],
   },
-  {
-    key: '10',
-    name: '7',
-    age: 32,
-    address: 'Sydney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-  {
-    key: '11',
-    name: '8',
-    age: 32,
-    address: 'Sydney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-  {
-    key: '12',
-    name: '9',
-    age: 32,
-    address: 'Sydney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-  {
-    key: '13',
-    name: '10',
-    age: 32,
-    address: 'Sydney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-  {
-    key: '14',
-    name: '11',
-    age: 32,
-    address: 'Sydney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-  {
-    key: '15',
-    name: '12',
-    age: 32,
-    address: 'Sydney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-  {
-    key: '16',
-    name: '13',
-    age: 32,
-    address: 'Sydney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-  {
-    key: '17',
-    name: '14',
-    age: 32,
-    address: 'Sydney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-  {
-    key: '18',
-    name: '15',
-    age: 32,
-    address: 'Sydney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-  {
-    key: '19',
-    name: '16',
-    age: 32,
-    address: 'Sydney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-  {
-    key: '20',
-    name: '17',
-    age: 32,
-    address: 'Sydney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-  
 ];
 
-interface WindowSize {
-  width: number;
-  height: number;
+interface Props {
+  setStep: React.Dispatch<React.SetStateAction<'config' | 'running'>>
 }
 
-const CRTables: React.FC = () => {
-  const wSize:WindowSize = useWindowSize();
-    console.log('Window size:', wSize);
-    return(
-        <Table<DataType> 
-          columns={columns} 
-          dataSource={data}
-          pagination={false}
-          id='ResultTable'
-          scroll={{ y: wSize.height*0.55 }}
-        />
+const CRTables: React.FC<Props> = ({setStep}) => {
+  const { t } = useTranslation()
+  const [taskStatus,setTaskStatus] = useState<'default'|'processing'|'success'>('default')
+  return(
+    <div className='page'>
+      <div className='header'>
+        <Row>
+          <Col span={8}>
+            <Title level={3} style={{ margin: 0 }}>{t('ComputationResultTable.pageTitle')}</Title>
+          </Col>
+          <Col span={16} style={{textAlign:'right'}}>
+            <Badge style={{width: '120px',marginRight:'10px'}} status={taskStatus} text={t(`ComputationResultTable.${taskStatus}`)}/>
+            <Button
+              type='primary'
+              style={{ width: '120px', marginRight: '10px' }}
+              onClick={()=>{setStep('config')}}
+            >
+              {t('ComputationResultTable.backToTaskConfig')}
+            </Button>
+          </Col>
+        </Row>
+      </div>
+      <div className='content'>
+        <div className='scroll'
+          style={{
+            overflow: 'auto',
+            border: '1px solid #727272',
+            borderRadius: 12,
+          }}
+        >
+          <Table<DataType> 
+            columns={columns} 
+            dataSource={data}
+            pagination={false}
+            id='ResultTable'
+          />
+        </div>
+      </div>
+    </div>
+        
     ) 
 }
 export default CRTables;
