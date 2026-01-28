@@ -42,7 +42,7 @@ type TaskCfgFrontInterface struct {
 }
 
 type TaskConfig struct {
-	ID             uint64              `gorm:"primaryKey"`
+	ID             string              `gorm:"primaryKey"`
 	CreateTime   int64               `gorm:"not null"`
 	FileAlgorithm  FileComputationType `gorm:"not null"`
 	PhotoAlgorithm PicComputationType  `gorm:"not null"`

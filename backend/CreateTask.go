@@ -13,7 +13,7 @@ func CreateTask(cfgFront *model.TaskCfgFrontInterface) error {
 	applogger.Logger.Info("CreateTask called with config: ", cfgFront)
 	cfg.Status = model.TaskStatusPending
 	cfg.CreateTime = time.Now().Unix()
-	cfg.ID = utils.RandUint64ByTime()
+	cfg.ID = utils.GetTaskID()
 	cfg.Paths = make([]model.PathCfg, len(cfgFront.PathCfgs))
 	copy(cfg.Paths, cfgFront.PathCfgs)
 	cfg.FileAlgorithm = cfgFront.FileCfg.Method

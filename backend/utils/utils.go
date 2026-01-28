@@ -1,12 +1,15 @@
 package utils
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
+	"fmt"
 	"math/rand"
 	"time"
 )
 
-var rng = rand.New(rand.NewSource(time.Now().UnixNano()))
-
-func RandUint64ByTime() uint64 {
-	return rng.Uint64()
+func GetTaskID() string {
+	raw := fmt.Sprintf("%v%v", time.Now().UnixNano(), rand.Uint64())
+	id := sha256.Sum256([]byte(raw))
+	return hex.EncodeToString(id[:])
 }
