@@ -4,12 +4,12 @@ import Icon, { HomeOutlined, SettingOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import { GetUserConfig } from "../wailsjs/go/main/App"
 import Settings from './pages/Settings'
-import { Button, Flex, notification } from 'antd';
 
 import zhCN from 'antd/locale/zh_CN'
 import enUS from 'antd/locale/en_US'
 import Home from './pages/Home'
 import { TaskCfg } from './component/TaskSetting'
+import { useNotification } from './hooks/useNotification'
 
 const { Sider, Content } = Layout
 
@@ -26,17 +26,7 @@ const App: React.FC = () => {
     pathCfgs: []
   })
 
-  const [api, contextHolder] = notification.useNotification();
-  type NotificationType = 'success' | 'info' | 'warning' | 'error';
-  const openNotificationWithIcon = (type: NotificationType,title:string,desc:string) => {
-    api[type]({
-      title: title,
-      description: desc,
-      placement: 'bottomRight',
-      duration: 3,
-      showProgress: true,
-    });
-  };
+  const notification = useNotification()
 
   useEffect(() => {
     async function loadConfig() {
@@ -45,14 +35,15 @@ const App: React.FC = () => {
         setDarkMode(cfg.darkMode)
         await i18n.changeLanguage(cfg.language)
         setAntdLocale(cfg.language === 'zh' ? zhCN : enUS)
-        openNotificationWithIcon('success',"Success","User config loaded successfully.")
+
+        notification.open('success',"Success","User config loaded successfully.")
       } catch (err) {
-        openNotificationWithIcon('error',"Error","Failed to load user config, using default settings.")
+        notification.open('error',"Error","Failed to load user config, using default settings.")
         console.error("err to load user config", err)
       }
     }
     loadConfig()
-  }, [i18n,darkMode])
+  }, [i18n, darkMode])
   const menuItems = [
     {
       key: 'main',
@@ -76,7 +67,7 @@ const App: React.FC = () => {
           : antdTheme.defaultAlgorithm,
       }}
     >
-    {contextHolder}
+      {notification.container}
       <Layout style={{ minHeight: '100vh' }}>
         <Sider style={{background: darkMode ? '#222222':'#eaeaea'}}
           breakpoint="md"
@@ -113,7 +104,7 @@ const App: React.FC = () => {
                   
                   darkMode={darkMode}
                   setDarkMode={setDarkMode}
-                  notification={openNotificationWithIcon}
+                  notification={notification.open}
                 />
                 </div>
               )}
